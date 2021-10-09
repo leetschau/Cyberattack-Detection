@@ -31,7 +31,7 @@ window_width = 120 # seconds
 window_stride = 60 # seconds
 
 print("Import data")
-data = pd.read_csv("capture20110812_3.binetflow")
+data = pd.read_csv("../datasets/CTU-13-Dataset/3/capture20110812.binetflow")
 #with pd.option_context('display.max_rows', None, 'display.max_columns', 15):
 #    print(data.shape)
 #    print(data.head())
@@ -70,7 +70,7 @@ for i in range(0, nb_windows):
                                                        'TotBytes':['sum', 'mean', 'std', 'max', 'median'],
                                                        'SrcBytes':['sum', 'mean', 'std', 'max', 'median'],
                                                        'Label':lambda x: mode(x)[0]})).reset_index().assign(window_id=i))
-    print(X.shape)
+    #print(X.shape)
 
 del(data)
 
