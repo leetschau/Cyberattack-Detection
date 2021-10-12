@@ -45,16 +45,19 @@ def normalize_column(dt, column):
 
     dt[column] = (dt[column]-mean) / std
 
-data['StartTime'] = pd.to_datetime(data['StartTime']).astype(np.int64)*1e-9
+data['StartTime'] = pd.to_datetime(data['StartTime']).astype(np.int64) * 1e-9  # convert StartTime from string to int (unit: second)
 datetime_start = data['StartTime'].min()
 
-data['Window_lower'] = (data['StartTime']-datetime_start-window_width)/window_stride+1
-data['Window_lower'].clip(lower=0, inplace=True)
-data['Window_upper_excl'] = (data['StartTime']-datetime_start)/window_stride+1
-data = data.astype({"Window_lower": int, "Window_upper_excl": int})
+data['Window_lower'] = (data['StartTime'] - datetime_start - window_width) / window_stride + 1
+data['Window_lower'].clip(lower=0, inplace=True)  # convert negtive values to 0
+data['Window_upper_excl'] = (data['StartTime'] - datetime_start) / window_stride + 1
+data = data.astype({"Window_lower": int, "Window_upper_excl": int})  # convert the column from float to integer
 data.drop('StartTime', axis=1, inplace=True)
 
 data['Label'], labels = pd.factorize(data['Label'].str.slice(0, 15))
+# turn a String series into an integer ndarray which is indexer into the second return value:
+# *uniques* which contains only unique values of the origin series
+
 #print(data.dtypes)
 
 X = pd.DataFrame()
@@ -70,11 +73,13 @@ for i in range(0, nb_windows):
                                                        'TotBytes':['sum', 'mean', 'std', 'max', 'median'],
                                                        'SrcBytes':['sum', 'mean', 'std', 'max', 'median'],
                                                        'Label':lambda x: mode(x)[0]})).reset_index().assign(window_id=i))
+    # here the column names of X is: ('SrcBytes', 'median'),  ('Label', '<lambda>'), etc
     #print(X.shape)
 
 del(data)
 
 X.columns = ["_".join(x) if isinstance(x, tuple) else x for x in X.columns.ravel()]
+# now column names of X is converted to 'SrcBytes_median', 'Label_<lambda>', etc
 #print(X.columns.values)
 
 # std can be Nan if only one element
