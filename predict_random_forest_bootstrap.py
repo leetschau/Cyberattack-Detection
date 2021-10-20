@@ -26,11 +26,9 @@ from sklearn import model_selection, feature_selection, utils, ensemble, linear_
 
 print("Import data")
 
-#X = pd.read_hdf('data_window_botnet5.h5', key='data')
 X = pd.read_hdf('data_window_botnet3.h5', key='data')
 X.reset_index(drop=True, inplace=True)
 
-#X2 = pd.read_hdf('data_window3_botnet5.h5', key='data')
 X2 = pd.read_hdf('data_window3_botnet3.h5', key='data')
 X2.reset_index(drop=True, inplace=True)
 
@@ -41,7 +39,6 @@ X.drop('window_id', axis=1, inplace=True)
 y = X['Label_<lambda>']
 X.drop('Label_<lambda>', axis=1, inplace=True)
 
-#labels = np.load("data_window_botnet5_labels.npy")
 labels = np.load("data_window_botnet3_labels.npy", allow_pickle=True)
 
 print(X.columns.values)
